@@ -1,0 +1,63 @@
+---
+title: "36-315 Interactive Graphics Project Write-Up"
+author: "Elias Roche (rroche)"
+date: "May 11, 2018"
+output: 
+  html_document:
+    theme: spacelab
+---
+
+# Introduction
+
+Soccer is the most popular sport in the world, a sport that reaches out to children and adults alike and something that brings people together. In light of the upcoming FIFA World Cup in Russia, pundits have been discussing how the competition between clubs in the European leagues translates into international success. Do countries succeed in the World Cup due to team chemistry and strong dynamics or as a result of superstars returning home from club success abroad? We look into how different teams from different European leagues match up domestically and internationally and hope to shed some light on the age old question, which really is the most competitive league in Europe?
+
+To do so, we looked into the European Soccer Database, a SQLite database, from Kaggle. This dataset offers match and player data about over 25,000 matches and 10,000 games from 2008 to 2016. It also references player and team ratings obtained from EA Sports’ FIFA video game series allowing us to integrate team records with team ratings for a holistic view into a team’s performance.
+
+# Graph Descriptions / Examples
+
+## Team Performance Tab
+
+Before we look into how a team performs with regards to its rating or how players perform, we need to take a more overarching view at the team records of top clubs in the major European Leagues.  We need to look at how a Team has performed relative with the other Teams in its domestic league. We use Wins and Win Percentage as the metrics for this comparison. 
+In this case, we consider England (English Premier League), Spain (La Liga), France (Ligue 1), Italy (Serie A), and Germany (Bundesliga).
+
+The win percentage and win values in both of these charts are with respect to the total matches played from the 2008/2009 season until the 2015/2016 season. Looking at the modality of the histograms for different countries, we can see that while in Spain and Germany, the big names, such as Real Madrid, Barcelona, and Bayern Munich, have excelled consistently, there is more of a spread in the English, Italian, and French Leagues. We attribute this trend in the French League to the inflow of money into teams like Paris Saint-Germain and AS Monacco post 2011. However, looking at the English League, we have a wider distribution, with teams like Arsenal, Chelsea, Manchester United, Liverpool, and Manchester City excelling in the league. The English League is notorious for being extremely cut throat, with teams fighting to the end to claim the title for the season. At different points in the 2008-2016 time frame, different English clubs have marginally outperformed the runner ups.
+
+The scatter plot allows us to clearly visualize which teams have excelled and by what margin. The distances between the points for the top teams in the Spanish and German leagues are distinct, while there is more overlap in the English, French and Italian Leagues.
+This now brings us to the next evaluation, how do these teams from different leagues match up against each other. Is it a result of having less competition in the league or the potential and ability in the team?
+
+## Competitiveness Tab
+
+Competitiveness in a league is essential to the quality of play that occurs within each game. To help visualize this, two graphs were constructed: The first a trend plot that displays the winning percentage of the top 10 teams from the top 5 European leagues for eight seasons, and the second displaying Offensive and Defensive scores for those same teams.
+Winning percentage separation is a good indicator of how competitive the league is. Notice in the trend plot how the there are some teams in leagues that always have consistently higher winning percentages that the rest of the league. In England, most of the teams are close to together, demonstrating that there is not single dominant team in the league. To contrast, in Spain, Barcelona and Real Madrid are almost always the teams with the highest winning percentage each season, showing that they are dominant in their league. Top teams also are the teams with the most money. To take the Spanish League (La liga) as an example, both Barcelona and Real Madrid are multi-billion dollar organizations, dwarfing its competitors. It can also be seen in the French league that Paris Saint Germain had an exponential rise to the best team by far through seasons 11-15. This could be a result of an extremely lucrative closed shareholding organization called Qatar Sports Investments became its owner in 2012. Toggle the country using the drop-down bar and try and identify some other trends similar to these.
+The bar plot displays the Offensive and Defensive scores of each of the top 10 teams in the top 5 leagues across Europe. The scores were calculated through using the fifa scores the describe each teams playing style. The offensive score was calculated using the following equation:
+ 
+$mean(buildUpPlaySpeed) + mean(chanceCreationPassing) + mean(chanceCreationCrossing) + mean(chanceCreationShooting)$
+ 
+Mean was used to average each score from the 7 FIFA games data given. The defensive score was calculated using the following equation:
+ 
+$mean(defensePressure) + mean(defenseAggression)$
+ 
+There are fewer terms involved as there were not as many relevant variables for defense as there were for offense, however, these variables are quite telling. Notice how Offensive score is not necessarily correlated with winning percentage (shown at the bottom of each bar), and that a team's defensive score plays more of a role. Switch score with the “Offensive” and “Defensive” buttons and the country with the drop-down bar.
+
+## Age and Rating Tab:
+
+A team’s performance is highly related to its players’ capabilities and ages. A competitive team is usually formed by players that have top skills and are at the best period of their career. Therefore, we decide to plot a graph that shows the age distribution of the top 50 players from each league, which straightforwardly compares the average ages across different leagues. The user can click on the legend labels to hide/show its corresponding curve, which makes the comparisons between specific leagues easy. From the graph, we can tell that the top players from the Spanish league are on average youngest compared to players from other leagues, and the top players from the Italian league are on average the oldest. This implies that teams from the Spanish league could potentially have a better performance as it has more fresh blood in the system.
+
+At the same time, we use a scatterplot to show the rankings of top players of each season. The ranking is based on an overall rating of each player, which takes into consideration a comprehensive dimension of attributes (explained in the next tab). This graph allows us to clearly see the top players of each season and the clubs they play for, showing how top players contribute to the performance of highly competitive clubs. As clearly shown in the graph, the top two players each season from season 2012 to season 2016 are always from Barcelona and Real Madrid, implying the dominant performance of  these two clubs among all other clubs.
+
+## Player Tab:
+
+Having the best players is critical to staying competitive at the highest levels of the sport. The best players in Europe belong to the most successful teams. To visualize how the top players compare to each other, and to the rest of the players in Europe, we use two graphs. First, a radar chart that shows each player’s ranking in a variety of attributes. This allows us to see what skills each player possesses. The second graph shows the distribution of select attributes across the entirety of the players in the dataset, to see exactly how much the top players surpass the rest, on different facets of the game. The rankings are all in the range [0, 100], and are published every year by FIFA. 
+When using both graphs together, observations about how the skills that make a player effective can be made. For instance, we can see that Cristiano Ronaldo excels at finishing, shot power, and dribbling, which makes him an effective forward.In the distribution plot, we can see that he lies in the upper tail of these attributes.
+
+
+# Appendix
+
+Changes made to draft app based on feedbacks:
+
+- Added `shiny` widgets to increase interactions in `plotly` plots. 
+- Added an input option for the radar chart, to avoid overlapping players in one graph.
+- Clarified on the theme of the app and modified graphs so that they contribute to explaining problems related to the theme. 
+- Added captions to all the graphs.
+- Ensured all the inputs work.
+

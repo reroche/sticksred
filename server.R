@@ -16,7 +16,7 @@ shinyServer(function(input, output) {
                                    "Arjen Robben"=select(radar_df, Label, `Arjen Robben`),
                                    "Cristiano Ronaldo"=select(radar_df, Label, `Cristiano Ronaldo`),
                                    "Eden Hazard"=select(radar_df, Label, `Eden Hazard`),
-                                   "Lionel Messi"=select(radar_df, Label, `Lionel Messi"`),
+                                   "Lionel Messi"=select(radar_df, Label, `Lionel Messi`),
                                    "Luis Suarez"=select(radar_df, Label, `Luis Suarez`),
                                    "Manuel Neuer"=select(radar_df, Label, `Manuel Neuer`),
                                    "Mesut Ozil"=select(radar_df, Label, `Mesut Oezil`),
@@ -42,10 +42,6 @@ shinyServer(function(input, output) {
       as.data.frame()
     hchart(dat, "column", hcaes(x=., y=Freq)) %>%
       hc_title(text=paste("Distribtuion of ", input$var))
-    # ggplot(dat, aes(x=., y=Freq)) +
-    #   geom_bar(stat="identity", fill="darkred", color="white") +
-    #   labs(y="Density", title="Distribution of Attribute among Players") +
-    #   theme(axis.text.x=element_blank())
   })
   
   data.temp2 <- reactive({switch(input$dataset2, "France" = france1, "Spain" = spain1,
@@ -55,16 +51,6 @@ shinyServer(function(input, output) {
     dat <- data.temp2()
     hchart(dat, type="column", hcaes(x=team_name, y=win_percentage)) %>%
       hc_title(text="Winning Percentage of Teams Across League")
-    # geom_histogram(stat = "identity") +
-    # labs(title = ifelse(input$which_variable == "wins",
-    #                     "Total Wins over 9 seasons",
-    #                     "Winning Percentage over 9 seasons"),
-    #      x = "Team Names", 
-    #      y = ifelse(input$which_variable == "wins", "Number of Wins", 
-    #                 "Winning Percentage"),
-    #      fill = "Team Names",
-    #      caption = "Source: European Football Database") +
-    # theme(axis.text.x=element_text(angle=45, hjust=1))
   })
   # Highchart
   output$plot4 <- renderHighchart({
@@ -82,58 +68,6 @@ shinyServer(function(input, output) {
       hc_add_theme(hc_theme_google())
     hc
   })
-  
-  # output$plot4 <- renderMetricsgraphics({
-  #   checker = input$dataset2
-  #   if (checker == "France") {dat <- france1}
-  #   else if (checker == "Spain") {dat <- spain1}
-  #   else if (checker == "Germany") {dat <- germany1}
-  #   else if (checker == "England") {dat <- england1}
-  #   else {dat <- italy1}
-  #   mjs_plot(dat, x=win_percentage, y=wins) %>%
-  #     mjs_point(least_squares=TRUE, size_accessor=total_matches,
-  #               color_accessor=total_matches, color_type = "category",
-  #               x_rug=TRUE, y_rug=TRUE)
-  # })
-  # output$plot5 <- renderPlot({
-  #   data.temp <- reactive({switch(input$Country, "France" = france, "Spain" = spain,
-  #                                 "England" = england, "Germany" = germany, "Italy" = italy)})
-  #   ggplot(data.temp(),
-  #          aes_string(x = "team_name", y = "home_advantage", fill = "team_name")) +
-  #     geom_histogram(bins = input$n_breaks, stat = "identity") +
-  #     geom_text(aes(label = round(total_win_percentage,2), y = home_advantage + 1), size = 2) +
-  #     labs(title = ifelse(input$Country == "France",
-  #                         "Home Advantage for Top 10 Teams in France",
-  #                         ifelse(input$Country == "Germany",
-  #                                "Home Advantage for Top 10 Teams in Germany",
-  #                                ifelse(input$Country == "Italy",
-  #                                       "Home Advantage for Top 10 Teams in Italy",
-  #                                       ifelse(input$Country == "Spain",
-  #                                              "Home Advantage for Top 9 Teams in Spain",
-  #                                              "Home Advantage for Top 10 Teams in England")))),
-  #          x = "Team", y = "Home Advantage", fill = "Team Name",
-  #          caption = "Source: European Soccer Database") + 
-  #     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  # })
-  # output$plot6 <- renderPlot({
-  #   data.temp <- reactive({switch(input$Country, "France" = france_win, "Spain" = spain_win,
-  #                                 "England" = england_win, "Germany" = germany_win, "Italy" = italy_win)})
-  #   ggplot(data.temp(),
-  #          aes_string(x = "team_name", y = input$style, fill = "team_name")) +
-  #     geom_histogram(bins = input$n_breaks, stat = "identity") +
-  #     labs(title = ifelse(input$Country == "France",
-  #                         "Score for Top 10 Teams in France",
-  #                         ifelse(input$Country == "Germany",
-  #                                "Score for Top 10 Teams in Germany",
-  #                                ifelse(input$Country == "Italy",
-  #                                       "Score for Top 10 Teams in Italy",
-  #                                       ifelse(input$Country == "Spain",
-  #                                              "Score for Top 9 Teams in Spain",
-  #                                              "Score for Top 10 Teams in England")))),
-  #          x = "Team", y = "Score", fill = "Team Name",
-  #          caption = "Source: European Soccer Database") +
-  #     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  # })
   output$plot5 <- renderPlot({
     data.temp <- reactive({switch(input$Country, "France" = france_perc, "Spain" = spain_perc,
                                   "England" = england_perc, "Germany" = germany_perc, "Italy" = italy_perc)})

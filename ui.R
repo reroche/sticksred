@@ -14,10 +14,10 @@ dashboardPage(skin="red",
   dashboardSidebar(
     sidebarMenu(
       menuItem("Introduction", tabName="intro"),
-      menuItem("Players", tabName="tab1"),
-      menuItem("Teams", tabName="tab2"),
-      menuItem("Home Advantage", tabName="tab3"),
-      menuItem("Age", tabName="tab4")
+      menuItem("Team Performance", tabName="tab2"),
+      menuItem("Competitiveness", tabName="tab3"),
+      menuItem("Age and Rating", tabName="tab4"),
+      menuItem("Players", tabName="tab1")
     )
   ),
   dashboardBody(
@@ -25,9 +25,9 @@ dashboardPage(skin="red",
       tabItem(tabName="intro",
         column(width=12,
           box(
-            h1("Title"),
-            p("Welcome to our Shiny Web App!"),
-            p("We have two paragraphs.")
+            h1("Introduction"),
+            p("Soccer is the most popular sport in the world, a sport that reaches out to children and adults alike and something that brings people together. In light of the upcoming FIFA World Cup in Russia, pundits have been discussing how the competition between clubs in the European leagues translates into international success. Do countries succeed in the World Cup due to team chemistry and strong dynamics or as a result of superstars returning home from club success abroad? We look into how different teams from different European leagues match up domestically and internationally and hope to shed some light on the age old question, which really is the most competitive league in Europe?"),
+            p("To do so, we looked into the European Soccer Database, a SQLite database, from Kaggle. This dataset offers match and player data about over 25,000 matches and 10,000 games from 2008 to 2016. It also references player and team ratings obtained from EA Sports’ FIFA video game series allowing us to integrate team records with team ratings for a holistic view into a team’s performance.")
           )
         )
       ),
@@ -45,7 +45,8 @@ dashboardPage(skin="red",
                                                "Manuel Neuer",
                                                "Mesut Ozil",
                                                "Neymar",
-                                               "Zlatan Ibrahimovic"))
+                                               "Zlatan Ibrahimovic")),
+          p("This radar chart shows a player's rankings across a variety of skills and attributes. The top 10 players in Europe are included as options. The rankings are in the range [0,100], and are released by FIFA every year.")
           )
         ),
         fluidRow(
@@ -56,7 +57,8 @@ dashboardPage(skin="red",
                                                      "Reactions",
                                                      "Finishing",
                                                      "Stamina",
-                                                     "Overall Rating"))
+                                                     "Overall Rating")),
+            p("This graph shows the distribution of rankings for a particular skill across all players in Europe. The x-axis represents the scores for the attribute, and the y-axis represents the frequency of that score. When used with the previous graph, observations about how the skills that make a player effective can be made. For instance, we can see that Cristiano Ronaldo excels at finishing, shot power, and dribbling, which makes him an effective forward.In the distribution plot, we can see that he lies in the upper tail of these attributes. It is worth noting that some attributes, such as finishing, have an unexpected mode at 25. This is a result of estimating ratings for players (such as defenders or goalkeepers) who had insufficient display of an attribute, so 25 is commonly used instead.")
           )
         )
       ),
@@ -68,34 +70,17 @@ dashboardPage(skin="red",
             selectInput("dataset2", "Country", c("France", "Spain", "Germany", "Italy", "England")),
             radioButtons("which_variable", label = "Which variable?",
                    choices=c("Wins"="wins",
-                               "Win Percentage"="win_percentage"))
+                               "Win Percentage"="win_percentage")),
+            p("The bar chart shows a side-by-side comparison between Wins and Win Percentage for the top teams in the selected league. The control panel allows us to switch between European Leagues and switch between Wins and Win percentage. The option to toggle between Wins and Win Percentage only applies for the bar chart, as the scatter plot already shows this information on the x and y axis respectively.")
           )
         ),
         fluidRow(
-          box(highchartOutput("plot4"))
+          box(highchartOutput("plot4")),
+          box(
+            p("This scatter plot allows us to clearly see the distance between points when accounting for Wins and Win Percentage. The Y-axis corresponds to their number of Wins from 2008 - 2016 and the X-axis corresponds to their Win Percentage. The size component, when we hover over each team name, shows the number of games they have played. Looking at the distance between points, we can see how the points are clustered, allowing us to judge competitiveness to an extent.")
+          )
         )
       ),
-      # tabItem(tabName="tab3",
-      #   fluidRow(
-      #     box(plotOutput("plot5", height=300)),
-      #     box(
-      #       inputPanel(
-      #         selectInput("Country", "Dataset", c("France", "Spain", "England", "Germany", "Italy"), selected = "England")
-      #       )
-      #     )
-      #   ),
-      #   fluidRow(
-      #     box(plotOutput("plot6", height=300)),
-      #     box(
-      #       inputPanel(
-      #         selectInput("Country", "Dataset", c("France", "Spain", "England", "Germany", "Italy"), selected = "England")
-      #       ),
-      #       radioButtons("style", label = "Which Style?",
-      #                    choices = c("Offensive" = "offensive_score",
-      #                                "Defensive" = "defensive_score"))
-      #     )
-      #   )
-      # ),
       tabItem(tabName="tab3",
               fluidRow(
                 box(plotOutput("plot5", height=300)),
@@ -144,14 +129,14 @@ dashboardPage(skin="red",
           ), 
           p("This plot shows the age distribution of the top 50 players from each league. 
             We can smooth the curves by adjusting the bandwidth to 1.5. From the adjusted graph, 
-            jwe can tell that the top players from the Spanish league are on average youngest
-            jcompared to players from other leagues, and the top players from the Italian league 
-            jare on average the oldest. The age distribution of top players from the German league
-            jhas two modes, one at around 29 and another one at around 33. In general, we can tell 
-            jthat players normally reach their peak at the age of 30 to 32. At the same time, the
-            jSpanish league has their top players at a relatively younger age compared to other leagues, 
-            jwhich implies that the Spanish league potentially has a better performance as it has 
-            jmore fresh blood in the system.")
+            we can tell that the top players from the Spanish league are on average youngest
+            compared to players from other leagues, and the top players from the Italian league 
+            are on average the oldest. The age distribution of top players from the German league
+            has two modes, one at around 29 and another one at around 33. In general, we can tell 
+            that players normally reach their peak at the age of 30 to 32. At the same time, the
+            Spanish league has their top players at a relatively younger age compared to other leagues, 
+            which implies that the Spanish league potentially has a better performance as it has 
+            more fresh blood in the system.")
           )
         ),
         
