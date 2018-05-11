@@ -37,19 +37,19 @@ shinyServer(function(input, output) {
                                 "Germany" = germany1, "Italy" = italy1, "England" = england1)})
   
   output$plot3 <- renderHighchart({
-      dat <- data.temp2()
-      print(names(dat))
-      hchart(dat, type="column", hcaes(x=team_name, y=win_percentage))
-        # geom_histogram(stat = "identity") +
-        # labs(title = ifelse(input$which_variable == "wins",
-        #                     "Total Wins over 9 seasons",
-        #                     "Winning Percentage over 9 seasons"),
-        #      x = "Team Names", 
-        #      y = ifelse(input$which_variable == "wins", "Number of Wins", 
-        #                 "Winning Percentage"),
-        #      fill = "Team Names",
-        #      caption = "Source: European Football Database") +
-        # theme(axis.text.x=element_text(angle=45, hjust=1))
+    dat <- data.temp2()
+    print(names(dat))
+    hchart(dat, type="column", hcaes(x=team_name, y=win_percentage))
+    # geom_histogram(stat = "identity") +
+    # labs(title = ifelse(input$which_variable == "wins",
+    #                     "Total Wins over 9 seasons",
+    #                     "Winning Percentage over 9 seasons"),
+    #      x = "Team Names", 
+    #      y = ifelse(input$which_variable == "wins", "Number of Wins", 
+    #                 "Winning Percentage"),
+    #      fill = "Team Names",
+    #      caption = "Source: European Football Database") +
+    # theme(axis.text.x=element_text(angle=45, hjust=1))
   })
   # Highchart
   output$plot4 <- renderHighchart({
@@ -59,12 +59,17 @@ shinyServer(function(input, output) {
     else if (checker == "Germany") {dat <- germany1}
     else if (checker == "England") {dat <- england1}
     else {dat <- italy1}
-    # print(names(dat))
-    hc <- hchart(dat, type="scatter", hcaes(x=wins, y=win_percentage))
-      # hc_title(text = paste("How",checker,"performed")) 
-      # hc_add_series_scatter(dat$win_percentage, dat$wins, dat$total_matches, label =
-      #                        dat$team_name)
-    hc
+    # hc <- hchart() %>%
+    #   hc_title(text = paste("How",checker,"performed")) %>% 
+    #   hc_add_series_scatter(dat$win_percentage, dat$wins, dat$total_matches, label =
+    #                           dat$team_name) %>%
+    #   hc_subtitle(text = "Win Percentage, Wins, and Total Matches for Top teams") %>%
+    #   hc_add_theme(hc_theme_google())
+    hchart(dat, hcaes(x=win_percentage, y=wins, z=total_matches)) %>%
+      hc_title(text = paste("How",checker,"performed")) %>% 
+      hc_add_series_scatter(label=team_name) %>%
+      hc_subtitle(text = "Win Percentage, Wins, and Total Matches for Top teams")
+      
   })
   
   # output$plot4 <- renderMetricsgraphics({
@@ -158,23 +163,38 @@ shinyServer(function(input, output) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
   })
   output$plot7 <- renderPlotly({
-    p7 <- ggplot(players_perf, aes(x = age, color = league)) +
-      geom_density(adjust = 1.5) + 
-      labs(title = "Age Distribution Of Top Players For Each League",
+    p7 <- ggplot(players_perf, aes_string(x = "age")) +
+      geom_density(adjust = input$bandwidth, aes(color = league)) +
+      theme(plot.title = element_text(size=10), axis.title = element_text(size=10), 
+            axis.text = element_text(size=8), legend.text = element_text(size=8),
+            legend.title = element_text(size=8)) +
+      labs(title = "Top Players Age Distribution",
            x = "Age",
-           y = "Density",
-           color = "League")
-    ggplotly(p7)
+           y = "Density")
+    
+    ggplotly(p7) %>%
+      layout(legend = list(
+        orientation = "h",
+        y = -0.2
+      ))
   })
   output$plot8 <- renderPlotly({
-    p8 <- ggplot(players_season, aes(x = season, y = avgRating,
-                                     color = team_long_name)) +
-      geom_jitter(width = 0.2) +
-      theme(axis.text = element_text(angle=45, hjust=1)) +
+    p8 <- ggplot(subset(players_season, avgRating > input$scoreRange), 
+                 aes(x = season, y = avgRating,
+                     color = team_long_name, label = player_name)) +
+      geom_jitter() +
+      theme(plot.title = element_text(size=10), axis.title = element_text(size=10), 
+            axis.text = element_text(size=8), legend.text = element_text(size=8),
+            legend.title = element_text(size=8)) +
       labs(title = "Top Players For Each Season",
            x = "Season",
            y = "Player Rating",
            color = "Club")
-    ggplotly(p8)
+    
+    ggplotly(p8) %>%
+      layout(legend = list(
+        orientation = "h",
+        y = -0.2
+      ))
   })
 })

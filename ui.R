@@ -122,12 +122,44 @@ dashboardPage(skin="red",
       ),
       tabItem(tabName="tab4",
         fluidRow(
-          box(plotlyOutput("plot7", height=500, width=500))
+          box(
+            column(10, plotlyOutput("plot7"))
+          ),
+          box(inputPanel(
+            sliderInput("bandwidth", label = "Adjust Band Width",
+                        min = 0, max = 2.0, value = 1.0, step = 0.1)
+          ), 
+          p("This plot shows the age distribution of the top 50 players from each league. 
+            We can smooth the curves by adjusting the bandwidth to 1.5. From the adjusted graph, 
+            jwe can tell that the top players from the Spanish league are on average youngest
+            jcompared to players from other leagues, and the top players from the Italian league 
+            jare on average the oldest. The age distribution of top players from the German league
+            jhas two modes, one at around 29 and another one at around 33. In general, we can tell 
+            jthat players normally reach their peak at the age of 30 to 32. At the same time, the
+            jSpanish league has their top players at a relatively younger age compared to other leagues, 
+            jwhich implies that the Spanish league potentially has a better performance as it has 
+            jmore fresh blood in the system.")
+          )
         ),
+        
         fluidRow(
-          box(plotlyOutput("plot8", height=500, width=500))
-        )
-      ) 
+          box(
+            column(10, plotlyOutput("plot8"))
+          ), 
+          box(inputPanel(
+            sliderInput("scoreRange", label = "Score Range",
+                        min = 80, max = 100, value = 89, step = 1)
+          ),
+          p("This plot shows the top players ratings of each season across all the leagues.
+            Each point in the graph represents a player with their overall rating and the
+            season based on which that rating is caculated. The colors on the points represent
+            different clubs, giving us a way to relate the player's performance with the club's
+            performance. As clearly shown in the graph, the top two players each eason from season 2012 to 
+            season 2016 are always from Barcelona and Real Madrid, implying the dominant performance of 
+            these two clubs among all other clubs.")
+          )
+        ) 
+      )
     )
   )
 )

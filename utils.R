@@ -12,6 +12,7 @@ library(reshape2)
 # Import data
 sqlite_drv <- dbDriver("SQLite")
 sql_db <- dbConnect(sqlite_drv,"database.sqlite")
+sql_db
 Country <- dbGetQuery(sql_db,"Select * from Country")
 Match <- dbGetQuery(sql_db,"Select * from Match")
 League <- dbGetQuery(sql_db,"Select * from League")
@@ -298,21 +299,21 @@ for (id in leagueid) {
   away_player <- gather(away_player, player_num, player_id, away_player_1:away_player_11, factor_key=F)
   colnames(away_player)[3] = "team_api_id"
   
-  players_rating = players_attr %>% 
+  players_rating = players_attr %>%
     group_by(player_api_id) %>% summarise(nRating = n(), avgRating = mean(overall_rating), avgPotential = mean(potential))
   
-  players_performance = rbind(home_player, away_player) %>% 
+  players_performance = rbind(home_player, away_player) %>%
     group_by(team_api_id, player_id) %>% summarise(nGames = n()) %>%
-    left_join(teams, by = "team_api_id") %>% 
-    left_join(players, by = c("player_id" = "player_api_id")) %>% 
-    left_join(players_rating, by = c("player_id" = "player_api_id")) %>% 
+    left_join(teams, by = "team_api_id") %>%
+    left_join(players, by = c("player_id" = "player_api_id")) %>%
+    left_join(players_rating, by = c("player_id" = "player_api_id")) %>%
     filter(!is.na(player_name)) %>%
     mutate(birthday = sapply(birthday, str_sub, 1, 10), avgRating = sapply(avgRating, round, 3), avgPotential = sapply(avgPotential, round, 3)) %>%
     filter(!is.na(avgRating))
   
   players_performance = subset(players_performance, select = c(team_long_name,player_name,birthday,height,weight,avgRating,avgPotential))
   
-  players_performance <- players_performance[order(players_performance$avgRating, decreasing = TRUE),] 
+  players_performance <- players_performance[order(players_performance$avgRating, decreasing = TRUE),]
   players_performance <- head(players_performance, 50)
   players_performance$league <- rep(leaguename[match(id, leagueid)],
                                     nrow(players_performance))
@@ -325,12 +326,11 @@ for (id in leagueid) {
 }
 
 curDate <- as.Date("2018-01-01")
-players_perf$age <- round(age_calc(as.Date(players_perf$birthday), 
+players_perf$age <- round(age_calc(as.Date(players_perf$birthday),
                                    curDate, units = "years"))
 
-# Another Plotly
-Times = c('2012-08-01', '2013-08-01', '2014-08-01', '2015-08-01', '2016-08-01')
-idxes  = c(1,2,3,4)
+Times = c('2011-08-01', '2012-08-01', '2013-08-01', '2014-08-01', '2015-08-01', '2016-08-01')
+idxes  = c(1,2,3,4,5)
 
 players_season = NULL
 
@@ -354,21 +354,21 @@ for (idx in idxes) {
   away_player2 <- gather(away_player2, player_num, player_id, away_player_1:away_player_11, factor_key=F)
   colnames(away_player2)[3] = "team_api_id"
   
-  players_rating2 = players_attr %>% 
+  players_rating2 = players_attr %>%
     group_by(player_api_id) %>% summarise(nRating = n(), avgRating = mean(overall_rating), avgPotential = mean(potential))
   
-  players_performance2 = rbind(home_player2, away_player2) %>% 
+  players_performance2 = rbind(home_player2, away_player2) %>%
     group_by(team_api_id, player_id) %>% summarise(nGames = n()) %>%
-    left_join(teams, by = "team_api_id") %>% 
-    left_join(players, by = c("player_id" = "player_api_id")) %>% 
-    left_join(players_rating, by = c("player_id" = "player_api_id")) %>% 
+    left_join(teams, by = "team_api_id") %>%
+    left_join(players, by = c("player_id" = "player_api_id")) %>%
+    left_join(players_rating, by = c("player_id" = "player_api_id")) %>%
     filter(!is.na(player_name)) %>%
     mutate(birthday = sapply(birthday, str_sub, 1, 10), avgRating = sapply(avgRating, round, 3), avgPotential = sapply(avgPotential, round, 3)) %>%
     filter(!is.na(avgRating))
   
   players_performance2 = subset(players_performance2, select = c(team_long_name,player_name,avgRating))
   
-  players_performance2 <- players_performance2[order(players_performance2$avgRating, decreasing = TRUE),] 
+  players_performance2 <- players_performance2[order(players_performance2$avgRating, decreasing = TRUE),]
   players_performance2 <- head(players_performance2, 20)
   players_performance2$season <- rep(substr(Times[idx+1], 1, 4),
                                      nrow(players_performance2))
@@ -379,3 +379,5 @@ for (idx in idxes) {
     players_season <- rbind(players_season, players_performance2)
   }
 }
+
+dbDisconnect(sql_db)
