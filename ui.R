@@ -33,7 +33,20 @@ dashboardPage(skin="red",
       ),
       tabItem(tabName="tab1",
         fluidRow(
-          box(chartJSRadarOutput("plot1", height=500))
+          box(chartJSRadarOutput("plot1", height=500)),
+          box(
+            title="Controls",
+            selectInput("player1", "Player", c("Andres Iniesta",
+                                               "Arjen Robben",
+                                               "Cristiano Ronaldo",
+                                               "Eden Hazard",
+                                               "Lionel Messi",
+                                               "Luis Suarez",
+                                               "Manuel Neuer",
+                                               "Mesut Ozil",
+                                               "Neymar",
+                                               "Zlatan Ibrahimovic"))
+          )
         ),
         fluidRow(
           box(highchartOutput("plot2", height=300)),

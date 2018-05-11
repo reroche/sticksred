@@ -40,7 +40,7 @@ player_stats_elias <-
   as.data.frame()
 
 radar_df <-
-  head(player_stats_elias, 5) %>%
+  head(player_stats_elias, 10) %>%
   select(player_name, 10:42) %>%
   as.data.frame() %>%
   gather(key=Label, value=Score, -player_name) %>%

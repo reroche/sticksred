@@ -10,8 +10,22 @@ source("utils.R")
 
 shinyServer(function(input, output) {
   # Player Attribute Radar Chart
+  player_attr_names <- rownames(radar_df)
+  data.player1 <- reactive({switch(input$player1,
+                                   "Andres Iniesta"=select(radar_df, Label, `Andres Iniesta`),
+                                   "Arjen Robben"=select(radar_df, Label, `Arjen Robben`),
+                                   "Cristiano Ronaldo"=select(radar_df, Label, `Cristiano Ronaldo`),
+                                   "Eden Hazard"=select(radar_df, Label, `Eden Hazard`),
+                                   "Lionel Messi"=select(radar_df, Label, `Lionel Messi"`),
+                                   "Luis Suarez"=select(radar_df, Label, `Luis Suarez`),
+                                   "Manuel Neuer"=select(radar_df, Label, `Manuel Neuer`),
+                                   "Mesut Ozil"=select(radar_df, Label, `Mesut Oezil`),
+                                   "Neymar"=select(radar_df, Label, `Neymar`),
+                                   "Zlatan Ibrahimovic"=select(radar_df, Label, `Zlatan Ibrahimovic`)
+                                   )})
   output$plot1 <- renderChartJSRadar({
-    chartJSRadar(scores=radar_df, maxScale=100, showToolTipLabel=TRUE,
+    dat <- data.player1()
+    chartJSRadar(scores=dat, maxScale=100, showToolTipLabel=TRUE,
                  labelSize=10)
   })
   # Density bar chart of player attributes
@@ -26,7 +40,8 @@ shinyServer(function(input, output) {
     dat <- data.temp() %>%
       table() %>%
       as.data.frame()
-    hchart(dat, "column", hcaes(x=., y=Freq))
+    hchart(dat, "column", hcaes(x=., y=Freq)) %>%
+      hc_title(text=paste("Distribtuion of ", input$var))
     # ggplot(dat, aes(x=., y=Freq)) +
     #   geom_bar(stat="identity", fill="darkred", color="white") +
     #   labs(y="Density", title="Distribution of Attribute among Players") +
@@ -38,8 +53,8 @@ shinyServer(function(input, output) {
   
   output$plot3 <- renderHighchart({
     dat <- data.temp2()
-    print(names(dat))
-    hchart(dat, type="column", hcaes(x=team_name, y=win_percentage))
+    hchart(dat, type="column", hcaes(x=team_name, y=win_percentage)) %>%
+      hc_title(text="Winning Percentage of Teams Across League")
     # geom_histogram(stat = "identity") +
     # labs(title = ifelse(input$which_variable == "wins",
     #                     "Total Wins over 9 seasons",
@@ -59,17 +74,13 @@ shinyServer(function(input, output) {
     else if (checker == "Germany") {dat <- germany1}
     else if (checker == "England") {dat <- england1}
     else {dat <- italy1}
-    # hc <- hchart() %>%
-    #   hc_title(text = paste("How",checker,"performed")) %>% 
-    #   hc_add_series_scatter(dat$win_percentage, dat$wins, dat$total_matches, label =
-    #                           dat$team_name) %>%
-    #   hc_subtitle(text = "Win Percentage, Wins, and Total Matches for Top teams") %>%
-    #   hc_add_theme(hc_theme_google())
-    hchart(dat, hcaes(x=win_percentage, y=wins, z=total_matches)) %>%
+    hc <- highchart() %>%
       hc_title(text = paste("How",checker,"performed")) %>% 
-      hc_add_series_scatter(label=team_name) %>%
-      hc_subtitle(text = "Win Percentage, Wins, and Total Matches for Top teams")
-      
+      hc_add_series_scatter(dat$win_percentage, dat$wins, dat$total_matches, label =
+                              dat$team_name) %>%
+      hc_subtitle(text = "Win Percentage, Wins, and Total Matches for Top teams") %>%
+      hc_add_theme(hc_theme_google())
+    hc
   })
   
   # output$plot4 <- renderMetricsgraphics({
